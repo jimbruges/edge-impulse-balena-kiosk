@@ -1,0 +1,27 @@
+version: '2'
+services:
+  main:
+    build:
+      context: ./main
+    privileged: true
+    restart: always
+    network_mode: host
+    labels:
+      io.balena.features.kernel-modules: '1'
+      io.balena.features.firmware: '1'
+      io.balena.features.dbus: '1'
+      io.balena.features.supervisor-api: '1'
+      io.balena.features.balena-api: '1'
+    ports:
+      - '4915:4915'
+  browser:
+    image: bh.cr/balenalabs/browser-aarch64 # where <arch> is one of aarch64, arm32 or amd64
+    privileged: true # required for UDEV to find plugged in peripherals such as a USB mouse
+    network_mode: host
+    environment:
+        LAUNCH_URL: 'http://localhost:4915/'
+        KIOSK: '1'
+        LOCAL_HTTP_DELAY: '10'
+    ports:
+        - '5011' # management API (optional)
+        - '35173' # Chromium debugging port (optional)

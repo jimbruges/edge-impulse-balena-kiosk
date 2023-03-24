@@ -1,0 +1,7 @@
+FROM balenalib/%%BALENA_MACHINE_NAME%%-debian-node
+
+RUN install_packages python3 python3-pip make g++
+
+RUN npm install --unsafe-perm -g edge-impulse-cli --force
+
+ENTRYPOINT ["edge-impulse-run-impulse", "--debug"]
