@@ -91,7 +91,6 @@ window.WebServer = async () => {
             let factor = els.cameraImg.naturalHeight / els.cameraImg.clientHeight;
             current_blobs = new Array(NUM_COLS).fill([]); 
             for (let b of result.bounding_boxes) {
-                // console.log('b', b);
                 let bb = {
                     x: b.x / factor,
                     y: b.y / factor,
@@ -101,11 +100,10 @@ window.WebServer = async () => {
                     value: b.value
                 };
                 col = Math.round(b.x / COL_WIDTH);
-                // console.log('prev_blobs', previous_blobs, COL_WIDTH);
                 if (previous_blobs[col] != undefined){
                     for (let blob of previous_blobs[col]) {
                         if (blob.x != undefined) {
-                            if (Math.abs(Math.round(b.x - blob.x)) < DETECT_FACTOR * (b.width + blob.width) && Math.abs(Math.round(b.y - blob.y)) < DETECT_FACTOR * (b.height + blob.height)) {
+                            if (Math.abs((b.x - blob.x)) < DETECT_FACTOR * (b.width + blob.width) && Math.abs((b.y - blob.y)) < DETECT_FACTOR * (b.height + blob.height)) {
                                 // Check this blob has "moved" across the Y threshold
                                 if (blob.y >= TOP_Y && b.y < TOP_Y) {
                                     // Increment count for this column if blob has left the top of the image
@@ -124,10 +122,6 @@ window.WebServer = async () => {
                 }
                 
                 previous_blobs = current_blobs;
-                els.imageClassify.row.style.display = '';
-                els.additionalInfo.textContent = 'Count: ' + countsum;
-                els.imageClassify.text.textContent = 'Count: '+ countsum;
-                console.log('countsum', countsum);
                 if (!labelToColor[bb.label]) {
                     labelToColor[bb.label] = colors[0];
                     colors.splice(0, 1);
